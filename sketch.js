@@ -2,12 +2,12 @@
 
 var database;
 var dog, happyDog, dogImg;
-var foodS = -1, foodStock;
-var fedTime, lastFed, fedTimeRef; 
+var foodSRef, foodS = 0, foodStock;
+var fedTime, lastFed, fedTimeRef, lastFedMinute; 
 var foodObj;
 var feed, addFood;
 var foodStockRef;
-var gameState, gameStateRef;
+var gameState = 'Hungry', gameStateRef;
 var h;
 var bedroomImg, gardenImg, washroomImg;
 var currentTime;
@@ -63,6 +63,11 @@ function draw()
     lastFed = data.val();
   })
 
+  foodSRef = database.ref('food')
+  foodSRef.on('value', (data)=> {
+    foodS = data.val()
+  })
+
   textSize(20);
   fill(0);
   //text("Press Up Arrow to feed the Dog", 710, 50);
@@ -90,19 +95,19 @@ function draw()
     text("Last Feed: " + lastFed + "AM", 350, 30);
   }
 
-  currentTime = minute();
-
-  if(currentTime===(lastFed+1))
+  currentTime = hour();
+  console.log(currentTime+', '+lastFed)
+  if(currentTime===lastFed+1)
   {
     update("Playing");
     //foodObj.garden();
     image(gardenImg, 0, 0, 1100, 500)
-  }else if(currentTime===(lastFed+2))
+  }else if(currentTime===lastFed+2)
   {
     update("Sleeping");
     //foodObj.bedroom();
     image(bedroomImg, 0, 0, 1100, 500)
-  }else if(currentTime>(lastFed+2) && currentTime<=(lastFed+4))
+  }else if(currentTime>lastFed+2 && currentTime<=lastFed+4)
   {
     update("Bathing");
     //foodObj.washroom();
